@@ -7,7 +7,9 @@ const {
   
 const pino = require("pino");    
   
-  
+const fs = require('fs');
+const { log } = require("console");
+
   async function statusAutoView() {
 
     const { state, saveCreds } = await useMultiFileAuthState("./SESSION");
@@ -72,18 +74,34 @@ const pino = require("pino");
         if (message.key && message.key.remoteJid == "status@broadcast") {
           setTimeout(async () => {
             try {
-              await bot.readMessages([message.key]);
+              const ignoreData =await fs.readFileSync("ignoreList.json",'utf-8')
+              const ignoreObject = await JSON.parse(ignoreData);
+              if (message.key.participant in ignoreObject) {
+                console.log("user in ignore list");
+                } else{
+                await bot.readMessages([message.key]);
               user_name =  message.pushName
               console.log( (message.message.protocolMessage ? `\u2757 ${user_name} deleted their story` : `Viewed ${user_name}'s stories`));
+              
+              }
             } catch (err) {
               console.error("Error reading messages:", err);
             }
-          }, 2000);
+          }, 1000);
+          
+
+          //add number to list
+          filePath = "contactList.json"
+          const jsonData = fs.readFileSync(filePath, 'utf-8');
+          const jsonObject = JSON.parse(jsonData);
+          const newKey =  message.key.participant;
+          const newValue = message.pushName;
+          jsonObject[newKey] = newValue;
+          const updatedJsonData = JSON.stringify(jsonObject, null, 2);
+          fs.writeFileSync(filePath, updatedJsonData, 'utf-8');
+
         }
         
-        if (message.key && message.message.conversation === "!allcontacts") {
-          // and 
-        }
       });
     });
   }
