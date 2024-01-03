@@ -1,14 +1,60 @@
-const {
-    makeWASocket,
-    DisconnectReason,
-    useMultiFileAuthState,
-    fetchLatestBaileysVersion,
-  } = require ("@whiskeysockets/baileys");
-  
+const {makeWASocket, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion, MessageType, MessageOptions, Mimetype } = require ("@whiskeysockets/baileys");
 const pino = require("pino");    
-  
 const fs = require('fs');
-const { log } = require("console");
+const cron = require("node-cron");
+
+let day = 1;
+let cronCalled = false;
+
+function appendToJson(file_path, key, value) {
+  try {
+    const data = JSON.parse(fs.readFileSync(file_path));
+    data[key] = value;
+    fs.writeFileSync(file_path, JSON.stringify(data, null, 2));
+  } catch (error) {
+    fs.writeFileSync(file_path, JSON.stringify({ [key]: value }, null, 2));
+  }
+};
+
+function getKeysArrayFromJson(file_path)  {
+try {
+  const data = JSON.parse(fs.readFileSync(file_path));
+  const keys = Object.keys(data);
+  return keys;
+  } catch (error) {
+    console.error(`Error reading file: ${file_path}`);
+    return [];
+  }
+};
+
+function isKeyValueMatch(filePath, key, value) {
+  try {
+    const jsonString = fs.readFileSync(filePath, 'utf-8');
+    const jsonObject = JSON.parse(jsonString);
+    if (jsonObject.hasOwnProperty(key)) {
+      return jsonObject[key] === value && jsonObject[key] !== "false";
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error('Error reading or parsing the JSON file:', error.message);
+    return false;
+  }
+};
+
+function getValueOfkey(file_path, key) {
+  try {
+      const jsonData = JSON.parse(fs.readFileSync(file_path, 'utf-8'));
+      return jsonData[key] !== undefined ? jsonData[key] : `Key '${key}' not found in the JSON file.`;
+  } catch (error) {
+      if (error.code === 'ENOENT') {
+          return `File not found: ${file_path}`;
+      } else {
+          return `Error reading or parsing JSON file: ${file_path}`;
+      }
+  }
+};
+
 
   async function statusAutoView() {
 
@@ -19,7 +65,9 @@ const { log } = require("console");
         logger: pino({ level: "silent" }),
         version,
         printQRInTerminal: true,
+        browser: ["Render", "Safari", "3.O"],
         auth: state,
+        markOnlineOnConnect : false
       });
 
     bot.ev.on("connection.update", async (update) => {
@@ -45,8 +93,24 @@ const { log } = require("console");
       } else if (connection === "open") {
         console.log("Logged in successfully");
       }
-    });
-  
+    })
+    
+    if(!cronCalled) {
+      cron.schedule("0 6 * * *", async ()=>{
+            try {
+                day += 1;
+                console.log("update got")
+                bot.sendMessage('status@broadcast', {
+                  image: await fs.readFileSync(`./images/${day}.jpg`)
+                  }, {
+                  statusJidList: getKeysArrayFromJson("./contactList.json")
+                  });
+              } catch (err) {
+                  console.log(`error ${err} occured`)
+              }
+      });
+      cronCalled = true;
+    };
 
     bot.ev.on("creds.update", saveCreds);
   
@@ -56,55 +120,45 @@ const { log } = require("console");
         if (!message.message || message.message.ephemeralMessage)
           return;
 
-        if (message.key.fromMe && message.message.conversation === "!post") {
-          try {
-            console.log("update got")
-            bot.sendMessage('status@broadcast', {
-              text: 'Hi my friends!' 
-              }, {
-              backgroundColor: '#315575',
-              font: 3,
-              statusJidList: ['254794141227@s.whatsapp.net', '254736590981@s.whatsapp.net']
-              });
-          } catch (err) {
-              console.log(`error ${err} occured`)
-          }
-        }
-
+        //autoview status  
         if (message.key && message.key.remoteJid == "status@broadcast") {
           setTimeout(async () => {
             try {
               const ignoreData =await fs.readFileSync("ignoreList.json",'utf-8')
               const ignoreObject = await JSON.parse(ignoreData);
               if (message.key.participant in ignoreObject) {
-                console.log("user in ignore list");
+                console.log(`${message.pushName} in ignore list`);
                 } else{
                 await bot.readMessages([message.key]);
-              user_name =  message.pushName
-              console.log( (message.message.protocolMessage ? `\u2757 ${user_name} deleted their story` : `Viewed ${user_name}'s stories`));
+              console.log( (message.message.protocolMessage ? `\u2757 ${message.pushName} deleted their story` : `Viewed ${message.pushName}'s stories`));
               
               }
             } catch (err) {
               console.error("Error reading messages:", err);
             }
-          }, 1000);
-          
+          }, 6000);
+          appendToJson("./contactList.json", message.key.participant, message.pushName)
+        };
+      
+        //add number to ignore list
+        if (message.key.fromMe && message.message.conversation.startsWith("!ignore") ) {
+          try {
+            const ignoreNumber = (message.message.conversation.split(" ")[1]+"@s.whatsapp.net");
+            const ignoreObject = await JSON.parse(await fs.readFileSync("./contactList.json",'utf-8'));
+            if (ignoreNumber in ignoreObject) {
+              appendToJson("./ignoreList.json",ignoreNumber, getValueOfkey("./contactList.json",ignoreNumber))
+              } else{
+                appendToJson("./ignoreList.json",ignoreNumber,"-");
+            }
+          } catch (err) {
+            console.error("Error reading messages:", err);
+          }
+        };
 
-          //add number to list
-          filePath = "contactList.json"
-          const jsonData = fs.readFileSync(filePath, 'utf-8');
-          const jsonObject = JSON.parse(jsonData);
-          const newKey =  message.key.participant;
-          const newValue = message.pushName;
-          jsonObject[newKey] = newValue;
-          const updatedJsonData = JSON.stringify(jsonObject, null, 2);
-          fs.writeFileSync(filePath, updatedJsonData, 'utf-8');
-
-        }
         
       });
     });
-  }
+  };
 
 
 statusAutoView();

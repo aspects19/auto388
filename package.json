@@ -20,9 +20,10 @@
   },
   "homepage": "https://github.com/t-flair/auto388#readme",
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.5.0",
+    "@whiskeysockets/baileys": "github:WhiskeySockets/Baileys",
     "link-preview-js": "^3.0.5",
     "node-cron": "^3.0.3",
-    "qrcode-terminal": "^0.12.0"
+    "qrcode-terminal": "^0.12.0",
+    "sharp": "^0.30.7"
   }
 }
