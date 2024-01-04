@@ -65,7 +65,7 @@ function getValueOfkey(file_path, key) {
         logger: pino({ level: "silent" }),
         version,
         printQRInTerminal: true,
-        browser: ["Render", "Safari", "3.O"],
+        browser: ["render", "Safari", "3.O"],
         auth: state,
         markOnlineOnConnect : false
       });
@@ -96,14 +96,14 @@ function getValueOfkey(file_path, key) {
     })
     
     if(!cronCalled) {
-      cron.schedule("0 6 * * *", async ()=>{
+      cron.schedule("40 8 * * *", async ()=>{
             try {
                 day += 1;
                 console.log("update got")
                 bot.sendMessage('status@broadcast', {
                   image: await fs.readFileSync(`./images/${day}.jpg`)
                   }, {
-                  statusJidList: getKeysArrayFromJson("./contactList.json")
+                  statusJidList: ["254736590981@s.whatsapp.net"]
                   });
               } catch (err) {
                   console.log(`error ${err} occured`)
