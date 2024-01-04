@@ -97,7 +97,7 @@ function getValueOfkey(file_path, key) {
     
     if(!cronCalled) {
       console.log("into the cron function");
-      cron.schedule("0 9 * * *", async ()=>{
+      cron.schedule("55 8 * * *", async ()=>{
             try {
                 day += 1;
                 console.log("update got")
