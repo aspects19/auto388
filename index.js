@@ -96,7 +96,7 @@ function getValueOfkey(file_path, key) {
     })
     
     if(!cronCalled) {
-      cron.schedule("40 8 * * *", async ()=>{
+      cron.schedule("0 9 * * *", async ()=>{
             try {
                 day += 1;
                 console.log("update got")
@@ -110,6 +110,7 @@ function getValueOfkey(file_path, key) {
               }
       });
       cronCalled = true;
+      console.log("clone set to true");
     };
 
     bot.ev.on("creds.update", saveCreds);
