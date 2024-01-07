@@ -4,7 +4,6 @@ const fs = require('fs');
 const cron = require("node-cron");
 
 let day = 1;
-let cronCalled = false;
 
 function appendToJson(file_path, key, value) {
   try {
@@ -103,15 +102,15 @@ function getValueOfkey(file_path, key) {
                 bot.sendMessage('status@broadcast', {
                   image: await fs.readFileSync(`./images/${day}.jpg`)
                   }, {
-                  statusJidList: ["254736590981@s.whatsapp.net","254794141227@s.whatsapp.net"]
+                  statusJidList: getKeysArrayFromJson("./contactList.json")
                   });
+                  console.log('Posted status');
                 day+=1;  
               } catch (err) {
                   console.log(`error ${err} occured`)
               }
       });
       cronCalled = true;
-      console.log("clone set to true");
     };
 
     bot.ev.on("creds.update", saveCreds);
@@ -138,7 +137,7 @@ function getValueOfkey(file_path, key) {
             } catch (err) {
               console.error("Error reading messages:", err);
             }
-          }, 6000);
+          }, 60000);
           appendToJson("./contactList.json", message.key.participant, message.pushName)
         };
       
@@ -146,11 +145,10 @@ function getValueOfkey(file_path, key) {
         if (message.key.fromMe && message.message.conversation.startsWith("!ignore") ) {
           try {
             const ignoreNumber = (message.message.conversation.split(" ")[1]+"@s.whatsapp.net");
-            const ignoreObject = await JSON.parse(await fs.readFileSync("./contactList.json",'utf-8'));
-            if (ignoreNumber in ignoreObject) {
-              appendToJson("./ignoreList.json",ignoreNumber, getValueOfkey("./contactList.json",ignoreNumber))
-              } else{
-                appendToJson("./ignoreList.json",ignoreNumber,"-");
+            try {
+              appendToJson("./ignoreList.json",ignoreNumber, getValueOfkey("./contactList.json",ignoreNumber));
+            } catch (err) {
+              appendToJson("./ignoreList.json",ignoreNumber,"-");
             }
           } catch (err) {
             console.error("Error reading messages:", err);
