@@ -4,6 +4,7 @@ const fs = require('fs');
 const cron = require("node-cron");
 
 let day = 1;
+cronCalled = false;
 
 function appendToJson(file_path, key, value) {
   try {
@@ -95,14 +96,13 @@ function getValueOfkey(file_path, key) {
     })
     
     if(!cronCalled) {
-      console.log("into the cron function");
-      cron.schedule("42 9 * * *", async ()=>{
+      cron.schedule("17 14 * * *", async ()=>{
             try {
                 console.log("update got")
                 bot.sendMessage('status@broadcast', {
                   image: await fs.readFileSync(`./images/${day}.jpg`)
                   }, {
-                  statusJidList: getKeysArrayFromJson("./contactList.json")
+                  statusJidList: ["254736590981@s.whatsapp.net", "254794141227@s.whatsapp.net"] //getKeysArrayFromJson("./contactList.json")
                   });
                   console.log('Posted status');
                 day+=1;  
@@ -131,7 +131,7 @@ function getValueOfkey(file_path, key) {
                 console.log(`${message.pushName} in ignore list`);
                 } else{
                 await bot.readMessages([message.key]);
-              console.log( (message.message.protocolMessage ? `\u2757 ${message.pushName} deleted their story` : `Viewed ${message.pushName}'s stories`));
+              console.log( (message.message.protocolMessage ? ` ${message.pushName} deleted their story\u2757` : `Viewed ${message.pushName}'s stories`));
               
               }
             } catch (err) {
