@@ -1,7 +1,7 @@
 const {makeWASocket, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion, MessageType, MessageOptions, Mimetype } = require ("@whiskeysockets/baileys");
 const pino = require("pino");    
 const fs = require('fs');
-const cron = require("node-cron");
+// const cron = require("node-cron");
 
 let day = 1;
 cronCalled = false;
