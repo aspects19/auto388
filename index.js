@@ -155,10 +155,6 @@ function getValueOfkey(file_path, key) {
           }
         };
 
-        if (message.key.fromMe) {
-          console.log(message);
-        }
-
         
       });
     });
