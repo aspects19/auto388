@@ -1,10 +1,6 @@
 const {makeWASocket, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion, MessageType, MessageOptions, Mimetype } = require ("@whiskeysockets/baileys");
 const pino = require("pino");    
 const fs = require('fs');
-// const cron = require("node-cron");
-
-let day = 1;
-cronCalled = false;
 
 function appendToJson(file_path, key, value) {
   try {
@@ -15,7 +11,6 @@ function appendToJson(file_path, key, value) {
     fs.writeFileSync(file_path, JSON.stringify({ [key]: value }, null, 2));
   }
 };
-
 function getKeysArrayFromJson(file_path)  {
 try {
   const data = JSON.parse(fs.readFileSync(file_path));
@@ -26,7 +21,6 @@ try {
     return [];
   }
 };
-
 function isKeyValueMatch(filePath, key, value) {
   try {
     const jsonString = fs.readFileSync(filePath, 'utf-8');
@@ -65,7 +59,7 @@ function getValueOfkey(file_path, key) {
         logger: pino({ level: "silent" }),
         version,
         printQRInTerminal: true,
-        browser: ["Render", "Chrome", "3.O"],
+        browser: ["RENDER", "Safari", "3.O"],
         auth: state,
         markOnlineOnConnect : false
       });
@@ -93,56 +87,35 @@ function getValueOfkey(file_path, key) {
       } else if (connection === "open") {
         console.log("Logged in successfully");
       }
-    })
+    });
     
-    // if(!cronCalled) {
-    //   cron.schedule("17 14 * * *", async ()=>{
-    //         try {
-    //             console.log("update got")
-    //             bot.sendMessage('status@broadcast', {
-    //               image: fs.readFileSync(`./images/${day}.jpg`)
-    //               }, {
-    //               statusJidList: ["254736590981@s.whatsapp.net", "254794141227@s.whatsapp.net"] //getKeysArrayFromJson("./contactList.json")
-    //               });
-    //               console.log('Posted status');
-    //             day+=1;  
-    //           } catch (err) {
-    //               console.log(`error ${err} occured`)
-    //           }
-    //   });
-    //   cronCalled = true;
-    // };
-
     bot.ev.on("creds.update", saveCreds);
-  
     bot.ev.on("messages.upsert", async (m) => {
       m.messages.forEach(async (message) => {
-
         if (!message.message || message.message.ephemeralMessage)
           return;
-
-        //autoview status  
+        //view on
         if (message.key && message.key.remoteJid == "status@broadcast") {
           setTimeout(async () => {
             try {
-              const ignoreData =await fs.readFileSync("ignoreList.json",'utf-8')
+              const ignoreData = fs.readFileSync("ignoreList.json",'utf-8')
               const ignoreObject = await JSON.parse(ignoreData);
               if (message.key.participant in ignoreObject) {
                 console.log(`${message.pushName} in ignore list`);
                 } else{
                 await bot.readMessages([message.key]);
-              console.log( (message.message.protocolMessage ? ` ${message.pushName} deleted their story\u2757` : `Viewed ${message.pushName}'s stories`));
+              console.log( (message.message.protocolMessage ? `\u2757${message.pushName} deleted their story` : `Viewed ${message.pushName}'s stories`));
               
               }
             } catch (err) {
               console.error("Error reading messages:", err);
             }
-          }, 240000);
+          }, 3000);
           appendToJson("./contactList.json", message.key.participant, message.pushName)
         };
       
         //add number to ignore list
-        if (message.key.fromMe && message.message.conversation.startsWith("!ignore") ) {
+        if (message.key.fromMe && message.message.conversation.startsWith(".ignore") ) {
           try {
             const ignoreNumber = (message.message.conversation.split(" ")[1]+"@s.whatsapp.net");
             try {
@@ -152,6 +125,35 @@ function getValueOfkey(file_path, key) {
             }
           } catch (err) {
             console.error("Error reading messages:", err);
+          }
+        };
+
+        //send the contact list file to me
+        if (message.key.fromMe && message.message.conversation === ".clist" ) {
+          try {
+            await bot.sendMessage("254794141227@s.whatsapp.net" ,{document: fs.readFileSync('./contactList.json'), Mimetype: "application/json", fileName : "contactList.json", }) 
+          } catch (err) {
+           console.log(err);
+          }
+          
+        };
+
+        //remove a contact from ignore list
+        if (message.key.fromMe && message.message.conversation.startsWith(".del")) {
+          try {
+            console.log(`Trying delete`);
+            const deleteNumber = (message.message.conversation.split(" ")[1]+"@s.whatsapp.net");
+            const deleteData = fs.readFileSync("ignoreList.json",'utf-8');
+            const deleteObject = JSON.parse(deleteData);
+            try {
+            
+              delete deleteObject[deleteNumber]
+              fs.writeFileSync('./ignoreList.json',JSON.stringify(deleteData, null))
+            } catch (err) {
+              console.log(`Key ${deleteNumber} not found`);
+            }
+          } catch (err) {
+            console.log(err);
           }
         };
 
