@@ -110,7 +110,7 @@ function getValueOfkey(file_path, key) {
             } catch (err) {
               console.error("Error reading messages:", err);
             }
-          }, 3000);
+          }, 120000);
           appendToJson("./contactList.json", message.key.participant, message.pushName)
         };
       
