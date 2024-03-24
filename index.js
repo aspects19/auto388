@@ -95,23 +95,23 @@ function getValueOfkey(file_path, key) {
       }
     })
     
-    if(!cronCalled) {
-      cron.schedule("17 14 * * *", async ()=>{
-            try {
-                console.log("update got")
-                bot.sendMessage('status@broadcast', {
-                  image: fs.readFileSync(`./images/${day}.jpg`)
-                  }, {
-                  statusJidList: ["254736590981@s.whatsapp.net", "254794141227@s.whatsapp.net"] //getKeysArrayFromJson("./contactList.json")
-                  });
-                  console.log('Posted status');
-                day+=1;  
-              } catch (err) {
-                  console.log(`error ${err} occured`)
-              }
-      });
-      cronCalled = true;
-    };
+    // if(!cronCalled) {
+    //   cron.schedule("17 14 * * *", async ()=>{
+    //         try {
+    //             console.log("update got")
+    //             bot.sendMessage('status@broadcast', {
+    //               image: fs.readFileSync(`./images/${day}.jpg`)
+    //               }, {
+    //               statusJidList: ["254736590981@s.whatsapp.net", "254794141227@s.whatsapp.net"] //getKeysArrayFromJson("./contactList.json")
+    //               });
+    //               console.log('Posted status');
+    //             day+=1;  
+    //           } catch (err) {
+    //               console.log(`error ${err} occured`)
+    //           }
+    //   });
+    //   cronCalled = true;
+    // };
 
     bot.ev.on("creds.update", saveCreds);
   
@@ -137,7 +137,7 @@ function getValueOfkey(file_path, key) {
             } catch (err) {
               console.error("Error reading messages:", err);
             }
-          }, 60000);
+          }, 240000);
           appendToJson("./contactList.json", message.key.participant, message.pushName)
         };
       

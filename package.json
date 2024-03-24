@@ -1,29 +1,5 @@
 {
-  "name": "auto388",
-  "version": "1.0.0",
-  "description": "A whatsApp auto-read status/stories build with Baileys",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/t-flair/auto388.git"
-  },
-  "keywords": [
-    "wa-bot"
-  ],
-  "author": "americ_inc",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/t-flair/auto388/issues"
-  },
-  "homepage": "https://github.com/t-flair/auto388#readme",
   "dependencies": {
-    "@whiskeysockets/baileys": "github:WhiskeySockets/Baileys",
-    "link-preview-js": "^3.0.5",
-    "node-cron": "^3.0.3",
-    "qrcode-terminal": "^0.12.0",
-    "sharp": "^0.30.7"
+    "@whiskeysockets/baileys": "^6.6.0"
   }
 }
