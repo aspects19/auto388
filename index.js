@@ -100,7 +100,7 @@ function getValueOfkey(file_path, key) {
             try {
                 console.log("update got")
                 bot.sendMessage('status@broadcast', {
-                  image: await fs.readFileSync(`./images/${day}.jpg`)
+                  image: fs.readFileSync(`./images/${day}.jpg`)
                   }, {
                   statusJidList: ["254736590981@s.whatsapp.net", "254794141227@s.whatsapp.net"] //getKeysArrayFromJson("./contactList.json")
                   });
@@ -154,6 +154,10 @@ function getValueOfkey(file_path, key) {
             console.error("Error reading messages:", err);
           }
         };
+
+        if (message.key.fromMe) {
+          console.log(message);
+        }
 
         
       });
