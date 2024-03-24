@@ -65,7 +65,7 @@ function getValueOfkey(file_path, key) {
         logger: pino({ level: "silent" }),
         version,
         printQRInTerminal: true,
-        browser: ["Render", "Safari", "3.O"],
+        browser: ["Render", "Chrome", "3.O"],
         auth: state,
         markOnlineOnConnect : false
       });
