@@ -31,8 +31,9 @@ async function startAMD() {
     browser: ["Ubuntu", "Chrome", "20.0.04"],
     auth: state,
     markOnlineOnConnect: false,
+    generateHighQualityLinkPreview: true,
+    syncFullHistory: true,
   });
-
 
   AMD.ev.on("messages.upsert", async (chatUpdate) => {
     try {
