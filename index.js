@@ -57,7 +57,7 @@ async function startAMD() {
           owner, 
             (m.message.viewOnceMessageV2.message.videoMessage) ? {video: buffer}: {image: buffer}
           
-        )
+        );
         
       };
 
