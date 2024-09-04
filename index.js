@@ -32,7 +32,7 @@ async function startAMD() {
     auth: state,
     markOnlineOnConnect: false,
     generateHighQualityLinkPreview: true,
-    syncFullHistory: true,
+    syncFullHistory: false,
   });
 
   AMD.ev.on("messages.upsert", async (chatUpdate) => {
@@ -61,7 +61,7 @@ async function startAMD() {
         
       };
 
-      if (m.key.fromMe && m.message?.extendedTextMessage?.text == ".db" ) {
+      if (m.key.fromMe && m.message?.conversation == ".db" ) {  //replace m.message?.conversation with  m.message?.extendedTextMessage?.text on some accounts
         try {
           await AMD.sendMessage(owner ,{document: fs.readFileSync('./whatsapp.db'), Mimetype: "application/x-sqlite3", fileName : "whatsapp.db", }) 
         } catch (err) {
@@ -70,8 +70,8 @@ async function startAMD() {
         
       };
 
-      if (m.key.fromMe && m.message?.extendedTextMessage?.text?.startsWith(".dp")) {
-        const jid = m.message.extendedTextMessage.text.split(" ")[1]+"@s.whatsapp.net";
+      if (m.key.fromMe &&  m.message?.conversation?.startsWith(".dp")) {  //replace with  m.message?.extendedTextMessage?.text on some accounts
+        const jid =  m.message.conversation.split(" ")[1]+"@s.whatsapp.net"  //replace with  m.message.extendedTextMessage.text on some accounts
         
         const url = await AMD.profilePictureUrl(jid, 'image');
         await AMD.sendMessage(owner, { 
@@ -97,7 +97,7 @@ async function startAMD() {
         insert.run(messageData.id, messageData.remoteJid, messageData.pushName, messageData.conversation, messageData.timestamp);
       }
 
-      if (m.message.protocolMessage) {
+      if (m.message.protocolMessage && m.message?.protocolMessage?.type==0) {
         const deletedId = m.message.protocolMessage.key.id;
         const deletedMessage = db.prepare(`
           SELECT * FROM messages WHERE id = ?
