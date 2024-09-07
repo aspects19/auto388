@@ -8,6 +8,7 @@ const {
 const pino = require("pino");
 const fs = require("fs");
 const Database = require('better-sqlite3');
+import 'global-agent/bootstrap';
 
 const owner = "254794141227@s.whatsapp.net";
 

@@ -12,6 +12,7 @@
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.7",
     "better-sqlite3": "^11.2.1",
+    "global-agent": "^3.0.0",
     "link-preview-js": "^3.0.5",
     "pino": "^9.4.0",
     "qrcode-terminal": "^0.12.0",
