@@ -30,7 +30,7 @@ async function startAMD() {
   const AMD = AMDConnect({
     logger: pino({ level: "silent" }),
     printQRInTerminal: true,
-    browser: ["Ubuntu2", "Chrome", "20.0.04"],
+    browser: ["Ubuntu", "Chrome", "20.0.04"],
     auth: state,
     markOnlineOnConnect: false,
     generateHighQualityLinkPreview: true,
