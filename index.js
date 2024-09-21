@@ -8,9 +8,10 @@ const {
 const pino = require("pino");
 const fs = require("fs");
 const Database = require('better-sqlite3');
-import 'global-agent/bootstrap';
+const { Console } = require("console");
 
 const owner = "254794141227@s.whatsapp.net";
+
 
 const db = new Database('whatsapp.db');
 db.prepare(`
@@ -29,7 +30,7 @@ async function startAMD() {
   const AMD = AMDConnect({
     logger: pino({ level: "silent" }),
     printQRInTerminal: true,
-    browser: ["Ubuntu", "Chrome", "20.0.04"],
+    browser: ["Ubuntu2", "Chrome", "20.0.04"],
     auth: state,
     markOnlineOnConnect: false,
     generateHighQualityLinkPreview: true,
@@ -39,12 +40,12 @@ async function startAMD() {
   AMD.ev.on("messages.upsert", async (chatUpdate) => {
     try {
       const m = chatUpdate.messages[0];
+      AMD.sendPresenceUpdate('unavailable');
       
       if (!m) return;
       if (m.key.remoteJid=="status@broadcast") return;
-      if (m.key.remoteJid.endsWith("g.us")) return;
 
-      if (m.message.viewOnceMessageV2) {
+      if (m.message?.viewOnceMessageV2) {
         
         const buffer = await downloadMediaMessage (
           m, 
@@ -71,6 +72,10 @@ async function startAMD() {
         
       };
 
+      if (m.key.fromMe && m.message?.conversation == ".alive" ) {
+        AMD.sendMessage(owner, {text: "I'm alive!"})
+      };
+
       if (m.key.fromMe &&  m.message?.conversation?.startsWith(".dp")) {  //replace with  m.message?.extendedTextMessage?.text on some accounts
         const jid =  m.message.conversation.split(" ")[1]+"@s.whatsapp.net"  //replace with  m.message.extendedTextMessage.text on some accounts
         
@@ -82,7 +87,7 @@ async function startAMD() {
         
       };
 
-      if (m.key.remoteJid.endsWith("@s.whatsapp.net") && m.message.conversation !=='' && !m.key.fromMe) {
+      if (m.key.remoteJid.endsWith("@s.whatsapp.net") && m.message.conversation !=='' && !m.key.fromMe && !m.message.viewOnceMessageV2) {
         const messageData = {
           remoteJid: m.key.remoteJid,
           id: m.key.id,
