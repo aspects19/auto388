@@ -8,7 +8,6 @@ const {
 const pino = require("pino");
 const fs = require("fs");
 const Database = require('better-sqlite3');
-const { Console } = require("console");
 
 const owner = "254794141227@s.whatsapp.net";
 
@@ -63,7 +62,7 @@ async function startAMD() {
         
       };
 
-      if (m.key.fromMe && m.message?.conversation == ".db" ) {  //replace m.message?.conversation with  m.message?.extendedTextMessage?.text on some accounts
+      if (m.key.fromMe && (m.message?.conversation == ".db" || m.message?.extendedTextMessage?.text==".db" )) {  //replace m.message?.conversation with   on some accounts
         try {
           await AMD.sendMessage(owner ,{document: fs.readFileSync('./whatsapp.db'), Mimetype: "application/x-sqlite3", fileName : "whatsapp.db", }) 
         } catch (err) {
@@ -72,12 +71,14 @@ async function startAMD() {
         
       };
 
-      if (m.key.fromMe && m.message?.conversation == ".alive" ) {
+      if (m.key.fromMe && ( m.message?.conversation == ".alive" || m.message?.extendedTextMessage?.text==".alive" )) {
         AMD.sendMessage(owner, {text: "I'm alive!"})
       };
 
-      if (m.key.fromMe &&  m.message?.conversation?.startsWith(".dp")) {  //replace with  m.message?.extendedTextMessage?.text on some accounts
-        const jid =  m.message.conversation.split(" ")[1]+"@s.whatsapp.net"  //replace with  m.message.extendedTextMessage.text on some accounts
+      if (m.key.fromMe && ( m.message?.conversation?.startsWith(".dp") || m.message?.extendedTextMessage?.text?.startsWith(".dp"))) {  
+        const jid = m.message.conversation.split(" ")[1]+"@s.whatsapp.net" || m.message.extendedTextMessage.text.split(" ")[1]+"@s.whatsapp.net";
+        console.log(jid);
+        
         
         const url = await AMD.profilePictureUrl(jid, 'image');
         await AMD.sendMessage(owner, { 
