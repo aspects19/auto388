@@ -3,7 +3,7 @@
 This is a simple personal WhatsApp bot used to extend features of WhatsApp.
 
 ![NodeJs](https://img.shields.io/badge/v18.19.0-green?style=flat&logo=nodejs&logoColor=yellow&label=nodejs&color=yellow)
-
+![NodeJs](https://img.shields.io/badge/v6.7.9-green?style=flat&logoColor=yellow&label=baileys&color=#0FCDA3)
 ## Features
 
 - Retrives  deleted messages.
