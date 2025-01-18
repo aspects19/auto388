@@ -33,6 +33,7 @@ This is a simple personal WhatsApp bot used to extend features of WhatsApp.
 
 4. Rename `.env.example` file to `.env` amd replace your phone number in it starting with the country code without the starting `+`
 5. 🥳 Hooray, you're good to go, run  `npm start` to start the bot locally
+6. Enter the pairing code it displays on the terminal onto your WhatsApp Link device using pairing code.
 
 ## How to use the features of this bot
 
