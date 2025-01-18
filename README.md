@@ -48,5 +48,5 @@ This is a simple personal WhatsApp bot used to extend features of WhatsApp.
 - Download of media (images and videos when someone deletes for you)
 - Prevention of multiple download of the view once media when it is replied to multiple time
 
- This project uses the library [baileys](https://github.com/WhiskeySockets/Baileys).
- **WARNING** This tool is not affiliated with [WhatsApp Inc](https://whatsapp.com) and should be used for educational use only and may lead to bans if misused. 
+ This project uses the [baileys](https://github.com/WhiskeySockets/Baileys) library.
+ **WARNING** This tool is not affiliated with [WhatsApp Inc](https://whatsapp.com) and should be used for educational use only and may lead to bans if misused.
