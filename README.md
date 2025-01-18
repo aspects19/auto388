@@ -13,11 +13,26 @@ This is a simple personal WhatsApp bot used to extend features of WhatsApp.
 
 ## How to build this project
 
- 1. Clone the repo ` git clone https://github.com/aspects19/auto388 `
- 2. navigate to the project ` cd auto388 `
- 3. install dependencies ` npm i `
- 4. Rename `.env.example` file to `.env` amd replace your number in it starting with the country code without the starting `+`
- 5. 🥳 Hooray, you're good to go, run  `npm start` to start the bot locally
+ 1. Clone the repo
+
+  ```sh
+   git clone https://github.com/aspects19/auto388 
+   ```
+
+2. Navigate to the project
+
+  ```sh
+   cd auto388 
+   ```
+
+3. Install dependencies
+
+  ```sh
+   npm i 
+   ```
+
+4. Rename `.env.example` file to `.env` amd replace your phone number in it starting with the country code without the starting `+`
+5. 🥳 Hooray, you're good to go, run  `npm start` to start the bot locally
 
 ## How to use the features of this bot
 
