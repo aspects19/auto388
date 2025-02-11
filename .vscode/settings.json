@@ -4,5 +4,15 @@
     ".vscode{,/**}"
   ],
   "appService.defaultWebAppToDeploy": "/subscriptions/07bc28a1-549f-46d3-b5f8-5fe43120f006/resourceGroups/WhatsAppBotResourceGroup/providers/Microsoft.Web/sites/WhatsAppBot",
-  "appService.deploySubpath": "."
+  "appService.deploySubpath": ".",
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "name": "auto399",
+      "group": "au",
+      "database": "whatsapp.db"
+    }
+  ],
+  "sqltools.useNodeRuntime": true
 }

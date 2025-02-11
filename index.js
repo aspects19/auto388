@@ -27,7 +27,7 @@ async function startAMD() {
   const { state, saveCreds } = await useMultiFileAuthState("./session");
   const AMD = AMDConnect({
     logger: pino({ level: "silent" }),
-    printQRInTerminal: false,
+    printQRInTerminal: true,
     browser: ["Ubuntu", "Chrome", "20.0.04"],
     auth: state,
     markOnlineOnConnect: false,
@@ -35,11 +35,11 @@ async function startAMD() {
     syncFullHistory: false,
   });
 
-  if (!AMD.authState.creds.registered) {
-    await AMD.waitForConnectionUpdate((update) => !!update.qr)
-    const code = await AMD.requestPairingCode(owner)
-    console.log("Your code is ", code);
-  }
+  // if (!AMD.authState.creds.registered) {
+  //   await AMD.waitForConnectionUpdate((update) => !!update.qr)
+  //   const code = await AMD.requestPairingCode(owner)
+  //   console.log("Your code is ", code);
+  // }
 
   AMD.ev.on("messages.upsert", async (chatUpdate) => {
     try {
@@ -80,8 +80,8 @@ async function startAMD() {
 
 
       if (m.key.fromMe &&  (m.message?.conversation || m.message?.extendedTextMessage?.text ).startsWith(".dp") ) {  //replace with  m.message?.extendedTextMessage?.text on some accounts
-        console.log(m.message)
-        const jid = m.message.extendedTextMessage.text.split(" ")[1]+"@s.whatsapp.net" //replace with  m.message.extendedTextMessage.text on some accounts
+        //const jid = m.message.extendedTextMessage.text.split(" ")[1]+"@s.whatsapp.net" //replace with  m.message.extendedTextMessage.text on some accounts
+        const jid = m.message.conversation.split(" ")[1]+"@s.whatsapp.net"
         const url = await AMD.profilePictureUrl(jid, 'image');
         await AMD.sendMessage(owner, { 
           image: { url: url }, 
